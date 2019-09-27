@@ -41,13 +41,7 @@ class Kernel
         $container->loadServices('App\\Controller', static function(string $serviceName, ReflectionClass $class) use ($reader, &$routes)
         {
             $route = $reader->getClassAnnotation($class, Route::class);
-
-            if(!$route)
-            {
-                return;
-            }
-
-            $baseRoute = $route->route;
+            $baseRoute = $route ? $route->route : '';
 
             foreach ($class->getMethods() as $method)
             {
@@ -80,6 +74,8 @@ class Kernel
     {
         $this->boot();
         $uri = $_SERVER['REQUEST_URI'];
+
+        dump($this->routes);
 
         if(!isset($this->routes[$uri]))
         {
