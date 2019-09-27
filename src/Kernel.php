@@ -4,6 +4,7 @@ namespace App;
 use App\Core\Annotations\Route;
 use App\Core\Container;
 use App\Core\Exception\ExceptionService;
+use App\Core\Http\Request;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use ReflectionClass;
@@ -52,9 +53,10 @@ class Kernel
                     continue;
                 }
 
-                $routes[str_replace('//' , '/', $baseRoute . $route->route)] = [
+                $routes["@$route->method " . str_replace('//' , '/', $baseRoute . $route->route)] = [
                     'service' => $serviceName,
-                    'method' => $method->getName(),
+                    'action' => $method->getName(),
+                    'method' => $route->method,
                 ];
             }
         });
@@ -73,9 +75,11 @@ class Kernel
     public function handleRequest(): void
     {
         $this->boot();
-        $uri = $_SERVER['REQUEST_URI'];
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = "@$method " . $_SERVER['REQUEST_URI'];
 
         dump($this->routes);
+        dump($this->container->getServices());
 
         if(!isset($this->routes[$uri]))
         {
@@ -84,7 +88,7 @@ class Kernel
         }
 
         $route = $this->routes[$uri];
-        $response = $this->container->getService($route['service'])->{$route['method']}();
+        $response = $this->container->getService($route['service'])->{$route['action']}();
         echo $response;
         die();
     }

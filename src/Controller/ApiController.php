@@ -22,9 +22,18 @@ class ApiController
 
     /**
      * @return string
-     * @Route(route="/api/post")
+     * @Route("/api/test", method="POST")
      */
     public function post(): string
+    {
+        return $this->request->getMethod();
+    }
+
+    /**
+     * @return string
+     * @Route("/api/test", method="GET")
+     */
+    public function get(): string
     {
         return $this->request->getMethod();
     }
