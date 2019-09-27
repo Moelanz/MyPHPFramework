@@ -1,7 +1,7 @@
 <?php
-namespace App\Service;
+namespace App\Core\Exception;
 
-use App\Controller\ExceptionController;
+use App\Core\Controller\ExceptionController;
 
 class ExceptionService
 {

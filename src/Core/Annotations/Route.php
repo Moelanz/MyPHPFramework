@@ -1,5 +1,5 @@
 <?php
-namespace App\Annotations;
+namespace App\Core\Annotations;
 
 /**
  * Class Route

@@ -1,8 +1,12 @@
 <?php
 namespace App\Controller;
 
-use App\Annotations\Route;
+use App\Core\Annotations\Route;
+use App\Core\Http\Request;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class DefaultController
@@ -17,16 +21,30 @@ class DefaultController
      */
     private $twig;
 
-    public function __construct(Environment $twig)
+    /**
+     * @var Request
+     */
+    private $request;
+
+    public function __construct(Environment $twig, Request $request)
     {
         $this->twig = $twig;
+        $this->request = $request;
     }
 
     /**
      * @Route(route="/")
+
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function index(): string
     {
-        return $this->twig->render('base.html.twig');
+        return $this->twig->render('base.html.twig', [
+            'name' => 'John Doe',
+            'method' => $this->request->getMethod(),
+        ]);
     }
 }

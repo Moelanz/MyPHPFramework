@@ -1,11 +1,12 @@
 <?php
 namespace App;
 
-use App\Annotations\Route;
+use App\Core\Annotations\Route;
+use App\Core\Container;
+use App\Core\Exception\ExceptionService;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use ReflectionClass;
-use App\Service\Serializer;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -26,8 +27,8 @@ class Kernel
 
     public function boot(): void
     {
-        $this->bootContainer($this->container);
         $this->loadTwig();
+        $this->bootContainer($this->container);
     }
 
     public function bootContainer(Container $container): void
@@ -37,7 +38,6 @@ class Kernel
 
         $routes = [];
 
-        $container->loadServices('App\\Service');
         $container->loadServices('App\\Controller', static function(string $serviceName, ReflectionClass $class) use ($reader, &$routes)
         {
             $route = $reader->getClassAnnotation($class, Route::class);
@@ -68,12 +68,10 @@ class Kernel
         $this->routes = $routes;
     }
 
-    private function loadTwig()
+    private function loadTwig(): void
     {
         $loader = new FilesystemLoader('templates');
-        $twig = new Environment($loader, [
-            'cache' => 'var/cache',
-        ]);
+        $twig = new Environment($loader);
 
         $this->container->addService(Environment::class, static function() use($twig) {return $twig;});
     }
@@ -85,7 +83,7 @@ class Kernel
 
         if(!isset($this->routes[$uri]))
         {
-            echo $this->container->getAlias('app.service.exceptionservice')->getExceptionController()->httpNotFound($uri);
+            echo $this->container->get(ExceptionService::class)->getExceptionController()->httpNotFound($uri);
             return;
         }
 
