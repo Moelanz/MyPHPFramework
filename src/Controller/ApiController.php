@@ -3,6 +3,10 @@ namespace App\Controller;
 
 use App\Core\Annotations\Route;
 use App\Core\Http\Request;
+use App\Core\Serializer\JSON;
+use App\Core\Serializer\Serializer;
+use App\Core\Serializer\XML;
+use App\Core\Serializer\YAML;
 
 /**
  * Class ApiController
@@ -15,9 +19,15 @@ class ApiController
      */
     private $request;
 
-    public function __construct(Request $request)
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    public function __construct(Request $request, Serializer $serializer)
     {
         $this->request = $request;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -35,6 +45,18 @@ class ApiController
      */
     public function get(): string
     {
-        return $this->request->getMethod();
+        return $this->serializer->serialize([
+            'user1' => [
+                'username' => 'Moelanz',
+                'password' => '***********',
+                'posts' => [
+                    'id' => 1
+                ]
+            ],
+            'user2' => [
+                'username' => 'Moelanz',
+                'password' => '***********',
+            ]
+        ], new JSON());
     }
 }

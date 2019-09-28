@@ -77,9 +77,12 @@ class Kernel
         $this->boot();
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = "@$method " . $_SERVER['REQUEST_URI'];
+        $uriAnyMethod = str_replace('@' . $method, '@ANY', $uri);
 
-        dump($this->routes);
-        dump($this->container->getServices());
+        if(isset($this->routes[$uriAnyMethod]))
+        {
+            $uri = $uriAnyMethod;
+        }
 
         if(!isset($this->routes[$uri]))
         {
