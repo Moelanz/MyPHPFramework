@@ -8,4 +8,10 @@ class Serializer
         $format->setData($data);
         return $format->convert();
     }
+
+    public function deserialize($data): array
+    {
+        $format = new JSON();
+        return $format->deconvert($data);
+    }
 }

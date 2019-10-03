@@ -3,10 +3,8 @@ namespace App\Controller;
 
 use App\Core\Annotations\Route;
 use App\Core\Http\Request;
-use App\Core\Serializer\JSON;
 use App\Core\Serializer\Serializer;
 use App\Core\Serializer\XML;
-use App\Core\Serializer\YAML;
 
 /**
  * Class ApiController
@@ -34,9 +32,11 @@ class ApiController
      * @return string
      * @Route("/api/test", method="POST")
      */
-    public function post(): string
+    public function post()
     {
-        return $this->request->getMethod();
+        $content = $this->serializer->deserialize($this->request->getContent());
+
+        dump($content);
     }
 
     /**
@@ -57,6 +57,6 @@ class ApiController
                 'username' => 'Moelanz',
                 'password' => '***********',
             ]
-        ], new JSON());
+        ], new XML());
     }
 }

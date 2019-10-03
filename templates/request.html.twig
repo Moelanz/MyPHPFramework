@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <ul class="mt-3">
+        <li>Method: {{ request.method }}</li>
+        <li>IP: {{ request.ip }}</li>
+    </ul>
+
+{% endblock %}

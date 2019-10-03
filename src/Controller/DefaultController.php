@@ -45,6 +45,22 @@ class DefaultController
         return $this->twig->render('base.html.twig', [
             'name' => 'John Doe',
             'method' => $this->request->getMethod(),
+            'ip' => $_SERVER['REMOTE_ADDR'],
+        ]);
+    }
+
+    /**
+     * @Route("request")
+     *
+     * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function requestTest(): string
+    {
+        return $this->twig->render('request.html.twig', [
+            'request' => $this->request,
         ]);
     }
 }

@@ -12,4 +12,29 @@ class Request
     {
         return strtoupper($_SERVER['REQUEST_METHOD']);
     }
+
+    public function getIp(): string
+    {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
+    public function getServerPort(): int
+    {
+        return $_SERVER['SERVER_PORT'];
+    }
+
+    public function getQuery($name): ?string
+    {
+        return $_GET[$name] ?? null;
+    }
+
+    public function getPost($name): ?string
+    {
+        return $_POST[$name] ?? null;
+    }
+
+    public function getContent(): string
+    {
+        return file_get_contents('php://input');
+    }
 }
