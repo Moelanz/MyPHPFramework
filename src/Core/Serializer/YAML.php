@@ -11,6 +11,11 @@ class YAML extends BaseFormat implements FormatNameInterface, FormatInterface
         return $this->arrayToYAML($this->data, '');
     }
 
+    public function deconvert($string)
+    {
+        // TODO: Implement deconvert() method.
+    }
+
     /**
      * @return string
      */

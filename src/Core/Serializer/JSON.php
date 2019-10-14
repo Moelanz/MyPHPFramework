@@ -13,9 +13,9 @@ class JSON extends BaseFormat implements FormatNameInterface, FormatInterface, D
 
     /**
      * @param $string
-     * @return array
+     * @return mixed
      */
-    public function deconvert($string): array
+    public function deconvert($string)
     {
         return json_decode($string, true);
     }

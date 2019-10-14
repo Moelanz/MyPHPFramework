@@ -5,6 +5,7 @@ use App\Core\Annotations\Route;
 use App\Core\Http\Request;
 use App\Core\Serializer\Serializer;
 use App\Core\Serializer\XML;
+use App\Entity\User;
 
 /**
  * Class ApiController
@@ -34,9 +35,12 @@ class ApiController
      */
     public function post()
     {
+        /**
+         * @var User $user
+         */
         $content = $this->serializer->deserialize($this->request->getContent());
 
-        dump($content);
+        dump($user->getUsername());
     }
 
     /**

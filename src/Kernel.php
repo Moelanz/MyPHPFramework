@@ -4,7 +4,6 @@ namespace App;
 use App\Core\Annotations\Route;
 use App\Core\Container;
 use App\Core\Exception\ExceptionService;
-use App\Core\Http\Request;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use ReflectionClass;

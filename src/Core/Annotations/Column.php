@@ -2,13 +2,13 @@
 namespace App\Core\Annotations;
 
 /**
- * Class Route
+ * Class Column
  * @package App\Core\Annotations
  *
  * @Annotation
  */
-class Route
+class Column
 {
-    public $route;
-    public $method = 'ANY';
+    public $type;
+    public $length;
 }

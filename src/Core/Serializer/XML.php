@@ -23,6 +23,11 @@ class XML extends BaseFormat implements FormatNameInterface, FormatInterface
         return $dom->saveXML();
     }
 
+    public function deconvert($string)
+    {
+        // TODO: Implement deconvert() method.
+    }
+
     /**
      * @return string
      */

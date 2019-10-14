@@ -8,7 +8,9 @@
     "twig/twig": "^2.11",
     "ext-json": "*",
     "ext-simplexml": "*",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "mongodb/mongodb": "1.4",
+    "ext-pdo": "*"
   }
   ,
   "autoload": {
