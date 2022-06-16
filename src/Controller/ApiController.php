@@ -1,6 +1,7 @@
 <?php namespace App\Controller;
 
 use Moelanz\Annotations\Route;
+use Moelanz\Controller\AbstractController;
 use Moelanz\Http\Request;
 use Moelanz\Serializer\Serializer;
 use Moelanz\Serializer\XML;

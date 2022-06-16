@@ -1,6 +1,7 @@
 <?php namespace App\Controller;
 
 use Moelanz\Annotations\Route;
+use Moelanz\Controller\AbstractController;
 use Moelanz\Http\Request;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -13,13 +14,8 @@ use Twig\Error\SyntaxError;
  *
  * @Route(route="/")
  */
-class DefaultController
+class DefaultController extends AbstractController
 {
-    /**
-     * @var Environment
-     */
-    private $twig;
-
     /**
      * @var Request
      */
@@ -31,7 +27,7 @@ class DefaultController
      */
     public function __construct(Environment $twig, Request $request)
     {
-        $this->twig = $twig;
+        parent::__construct($twig);
         $this->request = $request;
     }
 
@@ -45,7 +41,7 @@ class DefaultController
      */
     public function index(): string
     {
-        return $this->twig->render('base.html.twig', [
+        return $this->render('base.html.twig', [
             'name' => 'John Doe',
             'method' => $this->request->getMethod(),
             'ip' => $_SERVER['REMOTE_ADDR'],
@@ -62,7 +58,7 @@ class DefaultController
      */
     public function requestTest(): string
     {
-        return $this->twig->render('request.html.twig', [
+        return $this->render('request.html.twig', [
             'request' => $this->request,
         ]);
     }
