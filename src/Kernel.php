@@ -58,7 +58,7 @@ class Kernel
 
         $container->loadServices('App\\Controller', static function(string $serviceName, ReflectionClass $class) use ($reader, &$routes) {
             $route = $reader->getClassAnnotation($class, Route::class);
-            $baseRoute = $route ? $route->route : '';
+            $baseRoute = $route ? rtrim($route->route, '/') : '';
 
             foreach ($class->getMethods() as $method) {
                 $route = $reader->getMethodAnnotation($method, Route::class);
@@ -67,7 +67,7 @@ class Kernel
                     continue;
                 }
 
-                $routes["@$route->method " . str_replace('//' , '/', $baseRoute . $route->route)] = [
+                $routes["@$route->method " . rtrim(str_replace('//' , '/', $baseRoute . $route->route), '/')] = [
                     'service' => $serviceName,
                     'action' => $method->getName(),
                     'method' => $route->method,
@@ -96,7 +96,7 @@ class Kernel
     {
         $this->boot();
         $method = $_SERVER['REQUEST_METHOD'];
-        $uri = "@$method " . $_SERVER['REQUEST_URI'];
+        $uri = rtrim("@$method " . $_SERVER['REQUEST_URI'], '/');
         $uriAnyMethod = str_replace('@' . $method, '@ANY', $uri);
 
         if (isset($this->routes[$uriAnyMethod])) {
