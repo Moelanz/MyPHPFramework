@@ -1,13 +1,7 @@
-<?php
-namespace App\Controller;
+<?php namespace App\Controller;
 
-use App\Core\Annotations\Route;
-use App\Core\Database\EntityManager;
-use App\Core\Http\Request;
-use App\Entity\Post;
-use App\Entity\User;
-use App\Repository\PostRepository;
-use App\Repository\UserRepository;
+use Moelanz\Annotations\Route;
+use Moelanz\Http\Request;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -32,20 +26,13 @@ class DefaultController
     private $request;
 
     /**
-     * @var UserRepository
+     * @param Environment $twig
+     * @param Request $request
      */
-    private $userRepository;
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
-
-    public function __construct(Environment $twig, Request $request, UserRepository $userRepository, PostRepository $postRepository)
+    public function __construct(Environment $twig, Request $request)
     {
         $this->twig = $twig;
         $this->request = $request;
-        $this->userRepository = $userRepository;
-        $this->postRepository = $postRepository;
     }
 
     /**
@@ -58,19 +45,10 @@ class DefaultController
      */
     public function index(): string
     {
-        /*$user = $this->userRepository->find(1);
-
-        $post = new Post();
-        $post->setAuthor($user->getId());
-        $post->setContent('test');
-
-        $this->postRepository->save($post);*/
-
         return $this->twig->render('base.html.twig', [
             'name' => 'John Doe',
             'method' => $this->request->getMethod(),
             'ip' => $_SERVER['REMOTE_ADDR'],
-            'post' => $this->postRepository->find(1),
         ]);
     }
 

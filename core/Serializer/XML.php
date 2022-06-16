@@ -1,9 +1,14 @@
-<?php
-namespace App\Core\Serializer;
+<?php namespace Moelanz\Serializer;
 
 use DOMDocument;
 use SimpleXMLElement;
 
+/**
+ * Class XML
+ * @package Moelanz\Serializer
+ *
+ * @author Moelanz
+ */
 class XML extends BaseFormat implements FormatNameInterface, FormatInterface
 {
     /**
@@ -23,6 +28,10 @@ class XML extends BaseFormat implements FormatNameInterface, FormatInterface
         return $dom->saveXML();
     }
 
+    /**
+     * @param $string
+     * @return mixed|void
+     */
     public function deconvert($string)
     {
         // TODO: Implement deconvert() method.
@@ -36,12 +45,14 @@ class XML extends BaseFormat implements FormatNameInterface, FormatInterface
         return 'XML';
     }
 
+    /**
+     * @param array $data
+     * @param $node
+     */
     private function arrayToXML(array $data, $node)
     {
-        foreach ($data as $key => $value)
-        {
-            if(is_array($value))
-            {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
                 $subNode = $node->addChild(str_replace(' ','_', $key));
                 $this->arrayToXML($value, $subNode);
 

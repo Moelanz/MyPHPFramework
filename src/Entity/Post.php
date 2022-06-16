@@ -1,8 +1,10 @@
-<?php
-namespace App\Entity;
+<?php namespace App\Entity;
 
-use App\Core\Annotations\Column;
+use Moelanz\Annotations\Column;
 
+/**
+ *
+ */
 class Post
 {
     private $id;

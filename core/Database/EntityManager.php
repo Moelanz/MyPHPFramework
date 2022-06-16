@@ -1,10 +1,15 @@
-<?php
-namespace App\Core\Database;
+<?php namespace Moelanz\Database;
 
 use PDO;
 use PDOException;
 use PDOStatement;
 
+/**
+ * Class EntityManager
+ * @package Moelanz\Database
+ *
+ * @author Moelanz
+ */
 class EntityManager extends DatabaseManager implements DatabaseInterface
 {
     /**
@@ -22,6 +27,9 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
      */
     protected $error;
 
+    /**
+     * EntityManager Constructor
+     */
     public function __construct()
     {
         // Set Database details from config file
@@ -34,6 +42,9 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
         $this->connect();
     }
 
+    /**
+     * Connect To Database
+     */
     public function connect(): void
     {
         // Set DSN
@@ -56,13 +67,23 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
         }
     }
 
-    // Prepare statement with query
+    /**
+     * Prepare statement with query
+     *
+     * @param $sql
+     */
     public function query($sql): void
     {
         $this->stmt = $this->dbh->prepare($sql);
     }
 
-    // Bind values
+    /**
+     * Bind values
+     *
+     * @param $param
+     * @param $value
+     * @param null $type
+     */
     public function bindParam($param, $value, $type = null)
     {
         if($type === null)
@@ -90,13 +111,22 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
         $this->stmt->bindValue($param, $value, $type);
     }
 
-    // Execute the prepared statement
-    public function execute()
+    /**
+     * Execute the prepared statement
+     *
+     * @return bool
+     */
+    public function execute(): bool
     {
         return $this->stmt->execute();
     }
 
-    // Get result set as array of objects
+    /**
+     * Get result set as array of objects
+     *
+     * @param $className
+     * @return array|false
+     */
     public function getResult($className)
     {
         $this->execute();
@@ -104,7 +134,12 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
         return $this->stmt->fetchAll();
     }
 
-    // Get single result as object
+    /**
+     * Get single result as object
+     *
+     * @param $className
+     * @return mixed
+     */
     public function getSingleResult($className)
     {
         $this->execute();
@@ -112,7 +147,10 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
         return $this->stmt->fetch();
     }
 
-    public function getRowCount()
+    /**
+     * @return int
+     */
+    public function getRowCount(): int
     {
         return $this->stmt->rowCount();
     }

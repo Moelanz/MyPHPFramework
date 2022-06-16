@@ -5,7 +5,7 @@
  */
 define('MYSQL_HOST', 'localhost');
 define('MYSQL_PORT', 3606);
-define('MYSQL_USER', 'Root');
+define('MYSQL_USER', 'root');
 define('MYSQL_PASS', 'root');
 define('MYSQL_DBNAME', 'framework');
 

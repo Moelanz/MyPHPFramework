@@ -1,12 +1,17 @@
-<?php
-namespace App\Repository;
+<?php namespace App\Repository;
 
-use App\Core\Database\EntityManager;
-use App\Core\Database\EntityRepository;
+use Moelanz\Database\EntityManager;
+use Moelanz\Database\EntityRepository;
 use App\Entity\User;
 
+/**
+ *
+ */
 class UserRepository extends EntityRepository
 {
+    /**
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         parent::__construct($entityManager, User::class);

@@ -1,6 +1,11 @@
-<?php
-namespace App\Core\Serializer;
+<?php namespace Moelanz\Serializer;
 
+/**
+ * Class JSON
+ * @package Moelanz\Serializer
+ *
+ * @author Moelanz
+ */
 class JSON extends BaseFormat implements FormatNameInterface, FormatInterface, DeconvertInterface
 {
     /**

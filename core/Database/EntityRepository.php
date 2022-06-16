@@ -1,7 +1,6 @@
-<?php
-namespace App\Core\Database;
+<?php namespace Moelanz\Database;
 
-use App\Core\Annotations\Column;
+use Moelanz\Annotations\Column;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
@@ -9,6 +8,12 @@ use LogicException;
 use ReflectionClass;
 use ReflectionException;
 
+/**
+ * Class EntityRepository
+ * @package Moelanz\Database
+ *
+ * @author Moelanz
+ */
 class EntityRepository
 {
     private const PROPERTY_NAME = 'PROPERTY_NAME';
@@ -20,10 +25,21 @@ class EntityRepository
      */
     private $entityManager;
 
+    /**
+     * @var string
+     */
     private $entityClass;
+
+    /**
+     * @var array|string|string[]
+     */
     private $entityName;
 
-    public function __construct(EntityManager $entityManager, $entityClass)
+    /**
+     * @param EntityManager $entityManager
+     * @param string $entityClass
+     */
+    public function __construct(EntityManager $entityManager, string $entityClass)
     {
         $this->entityManager = $entityManager;
         $this->entityClass = $entityClass;
@@ -65,8 +81,7 @@ class EntityRepository
     public function save($entity): bool
     {
         // If the ID is set, we're updating an existing record
-        if ($entity->getId() !== null)
-        {
+        if ($entity->getId() !== null) {
             return $this->update($entity);
         }
 
@@ -80,8 +95,7 @@ class EntityRepository
 
         $this->entityManager->query($sql);
 
-        foreach ($this->getClassProperties() as $property)
-        {
+        foreach ($this->getClassProperties() as $property) {
             $getter = 'get' . ucwords($property);
             $this->entityManager->bindParam(':' . $property, $entity->$getter());
         }
@@ -96,8 +110,7 @@ class EntityRepository
      */
     public function update($entity): bool
     {
-        if ($entity->getId() === null)
-        {
+        if ($entity->getId() === null) {
             // We can't update a record unless it exists...
             throw new LogicException(
                 'Cannot update ' . $this->entityName . ' that does not yet exist in the database.'
@@ -113,8 +126,7 @@ class EntityRepository
         $this->entityManager->query($sql);
 
         $this->entityManager->bindParam(':id', $entity->getId());
-        foreach ($this->getClassProperties() as $property)
-        {
+        foreach ($this->getClassProperties() as $property) {
             $getter = 'get' . ucwords($property);
             $this->entityManager->bindParam(':' . $property, $entity->$getter());
         }
@@ -132,21 +144,17 @@ class EntityRepository
         $reader = new AnnotationReader();
         $properties = [];
 
-        try
-        {
+        try {
             $reflectionClass = new ReflectionClass($this->entityClass);
         }
-        catch (ReflectionException $e)
-        {
+        catch (ReflectionException $e) {
             die('Class ' . $this->entityClass . ' not found!');
         }
 
-        foreach ($reflectionClass->getProperties() as $property)
-        {
+        foreach ($reflectionClass->getProperties() as $property) {
             $propertyHasAnnotation = $reader->getPropertyAnnotation($property, Column::class);
 
-            if(!$propertyHasAnnotation)
-            {
+            if ( ! $propertyHasAnnotation) {
                 continue;
             }
 
@@ -167,11 +175,9 @@ class EntityRepository
     {
         $sql = '';
 
-        foreach ($properties as $key => $property)
-        {
+        foreach ($properties as $key => $property) {
 
-            switch($type)
-            {
+            switch($type) {
                 default:
                 case self::PROPERTY_NAME:
                     $sql .= $property;
@@ -187,8 +193,7 @@ class EntityRepository
             }
 
             // Check for last key, to not add a ,
-            if ($key !== array_key_last($properties))
-            {
+            if ($key !== array_key_last($properties)) {
                 $sql .= ', ';
             }
         }

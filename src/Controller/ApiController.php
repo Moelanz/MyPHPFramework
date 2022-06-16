@@ -1,10 +1,9 @@
-<?php
-namespace App\Controller;
+<?php namespace App\Controller;
 
-use App\Core\Annotations\Route;
-use App\Core\Http\Request;
-use App\Core\Serializer\Serializer;
-use App\Core\Serializer\XML;
+use Moelanz\Annotations\Route;
+use Moelanz\Http\Request;
+use Moelanz\Serializer\Serializer;
+use Moelanz\Serializer\XML;
 use App\Entity\User;
 
 /**

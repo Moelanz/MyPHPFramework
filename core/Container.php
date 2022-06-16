@@ -1,12 +1,17 @@
-<?php
-namespace App\Core;
+<?php namespace Moelanz;
 
-use App\Controller\DefaultController;
 use Closure;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
 
+/**
+ * Class Container
+ * @package Moelanz
+ *
+ * @author Moelanz
+ */
 class Container
 {
     private $services = [];
@@ -21,8 +26,7 @@ class Container
     {
         $this->services[$name] = $closure;
 
-        if($alias)
-        {
+        if ($alias) {
             $this->addAlias($alias, $name);
             return;
         }
@@ -63,13 +67,11 @@ class Container
      */
     public function getService(string $name)
     {
-        if(!$this->hasService($name))
-        {
+        if ( ! $this->hasService($name)) {
             return null;
         }
 
-        if($this->services[$name] instanceof Closure)
-        {
+        if ($this->services[$name] instanceof Closure) {
             $this->services[$name] = $this->services[$name]();
         }
 
@@ -104,52 +106,56 @@ class Container
         return $this->aliases;
     }
 
+    /**
+     * @param string $namespace
+     * @param Closure|null $callback
+     * @throws ReflectionException
+     */
     public function loadServices(string $namespace, ?Closure $callback = null): void
     {
-        $baseDir = dirname(__DIR__) . '/';
+        $baseDir = dirname(__DIR__) . '/src/';
 
         $actualDirectory = str_replace('\\', '/', $namespace);
         $actualDirectory = $baseDir . substr($actualDirectory, strpos($actualDirectory, '/') +1 );
 
-        $files = array_filter(scandir($actualDirectory), static function ($file)
-        {
+        $files = array_filter(scandir($actualDirectory), static function ($file) {
             return $file !== '.' && $file !== '..';
         });
 
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $serviceName = $namespace . '\\' . basename($file, '.php');
             $this->get($serviceName);
 
-            if($callback)
-            {
+            if($callback) {
                 $callback($serviceName, new ReflectionClass($serviceName));
             }
 
         }
     }
 
+    /**
+     * @param string $name
+     * @return mixed|object|void|null
+     * @throws ReflectionException
+     */
     public function get(string $name)
     {
         // If we have a binding for it, then it's a closure.
         // We can just invoke it and return the resolved instance.
-        if ($this->hasService($name))
-        {
+        if ($this->hasService($name)) {
             return $this->getService($name);
         }
 
         // Otherwise we are going to try and use reflection to "autowire"
         // the dependencies and instantiate this entry if it's a class.
-        if (!class_exists($name) && !interface_exists($name))
-        {
+        if ( ! class_exists($name) && !interface_exists($name)) {
             echo "Service $name does not exist!";
             return;
         }
 
         $reflector = new ReflectionClass($name);
 
-        if (!$reflector->isInstantiable())
-        {
+        if ( ! $reflector->isInstantiable()) {
             echo "Service $name is not instantiable!";
             return;
         }
@@ -159,10 +165,8 @@ class Container
          */
         $constructor = $reflector->getConstructor();
 
-        if ($constructor === null)
-        {
-            $this->addService($name, static function() use ($name)
-            {
+        if ($constructor === null) {
+            $this->addService($name, static function() use ($name) {
                 return new $name();
             });
 
@@ -170,11 +174,9 @@ class Container
         }
 
         $dependencies = array_map(
-            function (ReflectionParameter $dependency) use ($name)
-            {
+            function (ReflectionParameter $dependency) use ($name) {
 
-                if ($dependency->getClass() === null)
-                {
+                if ($dependency->getClass() === null) {
                     echo "Service $name could not find class!";
                     return;
                 }
@@ -185,12 +187,9 @@ class Container
             $constructor->getParameters()
         );
 
-        $this->addService($name, static function() use ($name, $dependencies)
-        {
-            foreach($dependencies as &$serviceParameter)
-            {
-                if($serviceParameter instanceof Closure)
-                {
+        $this->addService($name, static function() use ($name, $dependencies) {
+            foreach($dependencies as &$serviceParameter) {
+                if($serviceParameter instanceof Closure) {
                     $serviceParameter = $serviceParameter();
                 }
             }

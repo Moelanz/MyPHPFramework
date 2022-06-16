@@ -1,9 +1,10 @@
-<?php
-namespace App\Core\Annotations;
+<?php namespace Moelanz\Annotations;
 
 /**
  * Class Column
- * @package App\Core\Annotations
+ * @package Moelanz\Annotations
+ *
+ * @author Moelanz
  *
  * @Annotation
  */
