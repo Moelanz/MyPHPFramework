@@ -102,6 +102,11 @@ class EntityManager extends DatabaseManager implements DatabaseInterface
                     $type = PDO::PARAM_NULL;
                     break;
 
+                case $value instanceof \DateTime:
+                    $type = PDO::PARAM_STR;
+                    $value = $value->format('Y-m-d H:i:s');
+                    break;
+
                 default:
                     $type = PDO::PARAM_STR;
                     break;

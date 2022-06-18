@@ -5,6 +5,7 @@ use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use LogicException;
+use Moelanz\Helpers\StringHelper;
 use ReflectionClass;
 use ReflectionException;
 
@@ -43,7 +44,9 @@ class EntityRepository
     {
         $this->entityManager = $entityManager;
         $this->entityClass = $entityClass;
-        $this->entityName = str_replace(dirname($entityClass) . "\\", '', $entityClass);
+        $this->entityName = StringHelper::convertToSnakeCase(
+            str_replace(dirname($entityClass) . "\\", '', $entityClass)
+        );
     }
 
     /**
@@ -96,8 +99,9 @@ class EntityRepository
         $this->entityManager->query($sql);
 
         foreach ($this->getClassProperties() as $property) {
-            $getter = 'get' . ucwords($property);
-            $this->entityManager->bindParam(':' . $property, $entity->$getter());
+            /** @var Property $property */
+            $getter = $property->getGetter();
+            $this->entityManager->bindParam(':' . $property->getDatabaseName(), $entity->$getter());
         }
 
         return $this->entityManager->execute();
@@ -127,8 +131,9 @@ class EntityRepository
 
         $this->entityManager->bindParam(':id', $entity->getId());
         foreach ($this->getClassProperties() as $property) {
-            $getter = 'get' . ucwords($property);
-            $this->entityManager->bindParam(':' . $property, $entity->$getter());
+            /** @var Property $property */
+            $getter = $property->getGetter();
+            $this->entityManager->bindParam(':' . $property->getDatabaseName(), $entity->$getter());
         }
 
         return $this->entityManager->execute();
@@ -136,7 +141,6 @@ class EntityRepository
 
     /**
      * @return array
-     * @throws AnnotationException
      */
     private function getClassProperties(): array
     {
@@ -158,7 +162,13 @@ class EntityRepository
                 continue;
             }
 
-            $properties[] = $property->name;
+            $properties[] = (new Property())
+                ->setProperty($property->name)
+                ->setDatabaseName(StringHelper::convertToSnakeCase($property->name))
+                ->setGetter('get' . ucwords($property->name))
+                ->setType($propertyHasAnnotation->type)
+                ->setLength($propertyHasAnnotation->length)
+                ->setNullable($propertyHasAnnotation->nullable);
         }
 
         return $properties;
@@ -176,19 +186,19 @@ class EntityRepository
         $sql = '';
 
         foreach ($properties as $key => $property) {
-
+            /** @var Property $property */
             switch($type) {
                 default:
                 case self::PROPERTY_NAME:
-                    $sql .= $property;
+                    $sql .= $property->getDatabaseName();
                     break;
 
                 case self::PROPERTY_PARAM:
-                    $sql .= ':' . $property;
+                    $sql .= ':' . $property->getDatabaseName();
                     break;
 
                 case self::PROPERTY_UPDATE:
-                    $sql .= $property . ' = :' . $property;
+                    $sql .= $property->getDatabaseName() . ' = :' . $property->getDatabaseName();
                     break;
             }
 

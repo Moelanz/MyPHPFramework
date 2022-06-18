@@ -10,6 +10,24 @@
  */
 class Column
 {
+    /**
+     * Database type
+     *
+     * @var string
+     */
     public $type;
+
+    /**
+     * Database length
+     *
+     * @var int
+     */
     public $length;
+
+    /**
+     * Database nullable
+     *
+     * @var bool
+     */
+    public $nullable;
 }

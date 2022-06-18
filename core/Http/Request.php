@@ -59,6 +59,56 @@ class Request
     }
 
     /**
+     * Get Url
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->getSchemeAndHttpHost() . $this->getRequestUri();
+    }
+
+    /**
+     * Get Scheme And Http Host
+     *
+     * @return string
+     */
+    public function getSchemeAndHttpHost(): string
+    {
+        return $this->getScheme() . "://" . $this->getHost();
+    }
+
+    /**
+     * Get Scheme
+     *
+     * @return string
+     */
+    public function getScheme(): string
+    {
+        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    }
+
+    /**
+     * Get Request Uri
+     *
+     * @return string
+     */
+    public function getRequestUri(): string
+    {
+        return $_SERVER['REQUEST_URI'];
+    }
+
+    /**
+     * Get Host
+     *
+     * @return string
+     */
+    public function getHost(): string
+    {
+        return $_SERVER['HTTP_HOST'];
+    }
+
+    /**
      * Get Query Variable
      *
      * @param string $name
@@ -75,7 +125,7 @@ class Request
     }
 
     /**
-     * Get Post Variable
+     * Get ContactEntry Variable
      *
      * @param string $name
      * @param mixed|null $default

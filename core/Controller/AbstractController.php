@@ -1,5 +1,6 @@
 <?php namespace Moelanz\Controller;
 
+use Moelanz\Controller\Variables\DefaultVariables;
 use Moelanz\FlashMessage\FlashBag;
 use Moelanz\Http\Request;
 use Moelanz\Templates\Twig\Twig;
@@ -30,6 +31,13 @@ abstract class AbstractController
     private ? FlashBag $flashBag = null;
 
     /**
+     * Request
+     *
+     * @var Request|null
+     */
+    private ? Request $request = null;
+
+    /**
      * Get FlashBag
      *
      * @return FlashBag
@@ -56,7 +64,10 @@ abstract class AbstractController
     protected function render(string $template, array $context = []): string
     {
         return $this->getTwig()->render($template, array_merge([
-            'flashBag' => $this->getFlashBag(),
+            'app' => (new DefaultVariables(
+                $this->getRequest(),
+                $this->getFlashBag()
+            )),
         ], $context));
     }
 
@@ -67,7 +78,10 @@ abstract class AbstractController
      */
     protected function getRequest(): Request
     {
-        return new Request();
+        if (is_null($this->request)) {
+            $this->request = new Request();
+        }
+        return $this->request;
     }
 
     /**
