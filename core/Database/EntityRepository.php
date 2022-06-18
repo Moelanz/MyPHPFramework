@@ -39,14 +39,13 @@ class EntityRepository
     /**
      * @param EntityManager $entityManager
      * @param string $entityClass
+     * @throws ReflectionException
      */
     public function __construct(EntityManager $entityManager, string $entityClass)
     {
         $this->entityManager = $entityManager;
         $this->entityClass = $entityClass;
-        $this->entityName = StringHelper::convertToSnakeCase(
-            str_replace(dirname($entityClass) . "\\", '', $entityClass)
-        );
+        $this->entityName = StringHelper::convertToSnakeCase((new \ReflectionClass($entityClass))->getShortName());
     }
 
     /**
