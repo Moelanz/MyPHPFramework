@@ -1,6 +1,8 @@
 <?php namespace Moelanz\Controller;
 
-use Twig\Environment;
+use Moelanz\FlashMessage\FlashBag;
+use Moelanz\Http\Request;
+use Moelanz\Templates\Twig\Twig;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -14,20 +16,31 @@ use Twig\Error\SyntaxError;
 abstract class AbstractController
 {
     /**
-     * Twig Engine
+     * Twig
      *
-     * @var Environment
+     * @var Twig|null
      */
-    private $twig;
+    private ? Twig $twig = null;
 
     /**
-     * AbstractController Constructor
+     * FlashBag
      *
-     * @param Environment $twig
+     * @var FlashBag|null
      */
-    public function __construct(Environment $twig)
+    private ? FlashBag $flashBag = null;
+
+    /**
+     * Get FlashBag
+     *
+     * @return FlashBag
+     */
+    public function getFlashBag(): FlashBag
     {
-        $this->twig = $twig;
+        if (is_null($this->flashBag)) {
+            $this->flashBag = new FlashBag();
+        }
+
+        return $this->flashBag;
     }
 
     /**
@@ -42,6 +55,30 @@ abstract class AbstractController
      */
     protected function render(string $template, array $context = []): string
     {
-        return $this->twig->render($template, $context);
+        return $this->getTwig()->render($template, array_merge([
+            'flashBag' => $this->getFlashBag(),
+        ], $context));
+    }
+
+    /**
+     * Get request
+     *
+     * @return Request
+     */
+    protected function getRequest(): Request
+    {
+        return new Request();
+    }
+
+    /**
+     * @return Twig
+     */
+    private function getTwig(): Twig
+    {
+        if (is_null($this->twig)) {
+            $this->twig = new Twig();
+        }
+
+        return $this->twig;
     }
 }
