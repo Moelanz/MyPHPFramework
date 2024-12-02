@@ -4,7 +4,7 @@
   "require": {
     "php": ">=7.0.0",
     "doctrine/annotations": "^1.7",
-    "symfony/var-dumper": "^4.3",
+    "symfony/var-dumper": "^6.4",
     "twig/twig": "^2.11",
     "ext-pdo": "*"
   }
